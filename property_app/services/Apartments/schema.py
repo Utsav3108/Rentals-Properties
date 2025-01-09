@@ -13,6 +13,6 @@ class Apartment(PropertyBaseModel):
     description = Column(String(300), nullable=True)
 
     # New fields
-    latitude = Column(Float, nullable=True)
-    longitude = Column(Float, nullable=True)
-    location = Column(Geography(geometry_type='POINT', srid=4326), nullable=True)
+    # latitude = Column(Float, nullable=True)
+    # longitude = Column(Float, nullable=True)
+    # location = Column(Geography(geometry_type='POINT', srid=4326), nullable=True)

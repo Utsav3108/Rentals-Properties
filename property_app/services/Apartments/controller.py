@@ -73,6 +73,8 @@ def get_available_property(db: Session, limit: int, offset: int):
 
     # Convert each SQLAlchemy object to a Pydantic model
     return [ApartmentModel.model_validate(prop) for prop in properties]
+
+
 # Function to fetch all apartments with pagination support
 def get_all_apartments(db: Session, limit: int, offset: int):
     # Fetch all apartments with pagination using limit and offset

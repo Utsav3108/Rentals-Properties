@@ -1,7 +1,9 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, Float
 from property_app.core.database import Base
 from sqlalchemy.dialects.postgresql import UUID
+from geoalchemy2 import Geography
 import uuid
+
 
 class PropertyBaseModel(Base):
 
@@ -22,5 +24,8 @@ class PropertyBaseModel(Base):
     property_country = Column(String(60), nullable=False)
     property_available = Column(Boolean, nullable=False)
 
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    location = Column(Geography(geometry_type='POINT', srid=4326), nullable=True)
 
     
