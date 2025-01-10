@@ -1,7 +1,8 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from .schema import Apartment
-from .models import ApartmentModel, UpdatePropertyModel
+from .models import ApartmentModel
+from property_app.core.model import UpdatePropertyModel
 from sqlalchemy.future import select
 from fastapi import status
 import uuid

@@ -4,7 +4,8 @@ from fastapi import Query
 from fastapi.routing import APIRouter
 
 
-from .models import ApartmentModel, UpdatePropertyModel
+from .models import ApartmentModel
+from property_app.core.model import UpdatePropertyModel
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from .schema import Apartment
