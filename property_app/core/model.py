@@ -4,6 +4,7 @@ import uuid
 from fastapi import status
 
 
+
 class PropertyModel(BaseModel):
     pid : uuid.UUID = uuid.uuid4()
     landlord_id : uuid.UUID
