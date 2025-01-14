@@ -14,5 +14,8 @@ class ApartmentModel(PropertyModel):
 
     model_config = {"from_attributes": True}
 
-
+    def save_property(self, db):
+        return super().save_property(db)
+    
+    
 

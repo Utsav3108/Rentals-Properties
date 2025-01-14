@@ -1,11 +1,20 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 import uuid
 from fastapi import status
+from abc import ABC, abstractmethod  
+from sqlalchemy.orm import Session
 
+class ResponseModel(BaseModel):
+    success : bool
+    status : int
+    data : Optional[any] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
+    
 
-
-class PropertyModel(BaseModel):
+class PropertyModel(BaseModel, ABC):
     pid : uuid.UUID = uuid.uuid4()
     landlord_id : uuid.UUID
     landlord_email : str
@@ -26,6 +35,15 @@ class PropertyModel(BaseModel):
 
     model_config = {"from_attributes": True}
     
+    @abstractmethod
+    def save_property(self, db : Session) -> ResponseModel:
+        pass
+    
+    
+    
+    
+
+    
 # Define a Pydantic model for updating a property
 class UpdatePropertyModel(BaseModel):
     property_name: Optional[str] = None
@@ -41,11 +59,3 @@ class UpdatePropertyModel(BaseModel):
 
     model_config = {"from_attributes": True}  # Enables ORM support
 
-class ResponseModel(BaseModel):
-    success : bool
-    status : int
-    data : Optional[any] = None
-    
-    class Config:
-        arbitrary_types_allowed = True
-    
