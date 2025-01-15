@@ -29,9 +29,9 @@ def get_all_bunglows_from_db(limit : int, offset : int, db : Session = DATABASE_
     
     return list_of_bunglows
 
-def update_property(db : Session, id : uuid.UUID, model: UpdatePropertyModel):
+def update_property(db : Session, id : uuid.UUID, model: UpdatePropertyModel) -> ResponseModel:
     
-    prop = get_property(db=db, id=id)
+    prop = _get_property(db=db, id=id)
     
     if not prop:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Property not found")
@@ -45,8 +45,28 @@ def update_property(db : Session, id : uuid.UUID, model: UpdatePropertyModel):
     return ResponseModel(status=status.HTTP_200_OK, success=True, data=BunglowModel.model_validate(prop))
 
 
-def get_property(db  : Session , id : uuid.UUID):
+def _get_property(db  : Session , id : uuid.UUID):
     
     prop = db.execute(select(Bunglows).where(Bunglows.pid == id)).scalars().first()
     
     return prop
+
+def delete_property(db : Session, id : uuid.UUID) -> ResponseModel:
+    prop = _get_property(db=db, id=id)
+    
+    if not prop: 
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Property not found")
+    
+    db.delete(prop)
+    db.commit()
+    
+    
+    return ResponseModel(data="Proerty deleted successfully", status=status.HTTP_200_OK, success=True)
+
+def count_property(db : Session) -> int:
+    all_bunglows = db.execute(select(Bunglows)).scalars().all()
+    
+    count_of_props = len(all_bunglows)
+    
+    return count_of_props
+    

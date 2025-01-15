@@ -1,16 +1,20 @@
-from fastapi import status
+# fastapi imports
+from fastapi import HTTPException, status
 
+# other imports
 from typing import List
-import uuid
 
-from property_app.core.dependies import DATABASE_DEPENDENCY
+# property imports
 from property_app.core.model import PropertyModel
 from property_app.core.model import ResponseModel
 
+# sqlalchemy imports
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
+# Bunglows imports
 from .schema import Bunglows
+
 
 class BunglowModel(PropertyModel):
     sqft : str
@@ -32,5 +36,6 @@ class BunglowModel(PropertyModel):
         return ResponseModel(status=status.HTTP_200_OK, success=True, data=success_message)
 
 
-    
+
+
     

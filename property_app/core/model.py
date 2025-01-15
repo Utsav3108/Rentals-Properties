@@ -1,10 +1,15 @@
+# pydantic imports
 from pydantic import BaseModel
-from typing import Optional, List
+
+# other imports
+from abc import ABC, abstractmethod
+from typing import Optional
 import uuid
-from fastapi import status
-from abc import ABC, abstractmethod  
+
+# sqlalchemy imports  
 from sqlalchemy.orm import Session
 
+# Response Model : Use to return standard response for the application.
 class ResponseModel(BaseModel):
     success : bool
     status : int
@@ -13,7 +18,7 @@ class ResponseModel(BaseModel):
     class Config:
         arbitrary_types_allowed = True
     
-
+# Property Base Class
 class PropertyModel(BaseModel, ABC):
     pid : uuid.UUID = uuid.uuid4()
     landlord_id : uuid.UUID
@@ -38,8 +43,7 @@ class PropertyModel(BaseModel, ABC):
     @abstractmethod
     def save_property(self, db : Session) -> ResponseModel:
         pass
-    
-    
+
     
     
 
