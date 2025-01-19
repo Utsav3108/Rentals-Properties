@@ -1,7 +1,9 @@
 # FastApi imports
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 
 # property app import
+from property_app.core.config  import TOKEN_URL
 from property_app.services.Bunglows.models import BunglowModel
 from property_app.core.dependies import DATABASE_DEPENDENCY
 from property_app.core.model import ResponseModel, UpdatePropertyModel
@@ -15,17 +17,19 @@ import uuid
 
 # Bunglow imports
 from .exceptions import BUNGLOW_INTEGRITY_EXCEPTION
-
+from .controller import get_user_details
 
 router = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=TOKEN_URL)
 
 # MARK : Ping API
 @router.get("/bunglow_ping")
 def bunglowPing():
+    get_user_details()
     return {"message" : "Bunglow is ready to be built."}
 
 @router.get("/count")
-def count_of_bunglows(db : Session = DATABASE_DEPENDENCY):
+def count_of_bunglows(db : Session = DATABASE_DEPENDENCY, token : OAuth2PasswordBearer = Depends(oauth2_scheme)):
     
     from .controller import count_property
     

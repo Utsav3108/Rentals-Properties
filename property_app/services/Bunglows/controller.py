@@ -5,6 +5,7 @@ from fastapi import HTTPException, status
 from property_app.core.dependies import DATABASE_DEPENDENCY
 from property_app.core.model import UpdatePropertyModel, ResponseModel
 from property_app.services.Bunglows.models import BunglowModel
+from property_app.core.config import AUTH_BASE_URL, AUTH_TOKEN
 
 # sqlalchemy imports
 from sqlalchemy.orm import Session
@@ -16,6 +17,7 @@ from .schema import Bunglows
 # general imports
 from typing import List
 import uuid
+import requests
 
 # MARK: Get all bunglows controller
 def get_all_bunglows_from_db(limit : int, offset : int, db : Session = DATABASE_DEPENDENCY) -> List[BunglowModel]:
@@ -69,4 +71,23 @@ def count_property(db : Session) -> int:
     count_of_props = len(all_bunglows)
     
     return count_of_props
+   
+def get_user_details():
     
+    URL = AUTH_BASE_URL + "rentals/user"
+
+    # Set the headers to include the authorization token
+    headers = {
+        "Authorization": f"Bearer {AUTH_TOKEN}"
+    }
+
+    try:
+        # Make the GET request to the user service
+        response = requests.get(URL, headers=headers)
+        response.raise_for_status()  # Raise an exception for non-2xx status codes
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch user details: {str(e)}")
+    
+    print("User Details Response : ", response.json())
+    # Parse the JSON response and return it
+    return True
