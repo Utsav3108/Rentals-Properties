@@ -3,11 +3,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 # property app import
-from property_app.core.config  import TOKEN_URL
-from property_app.services.Bunglows.models import BunglowModel
-from property_app.core.dependies import DATABASE_DEPENDENCY
-from property_app.core.model import ResponseModel, UpdatePropertyModel
-from property_app.core.exceptions import OPERATIONAL_EXCEPTION
+from ...core.config  import TOKEN_URL
+from ...domain.models.bunglow_model import BunglowModel
+from ..dependencies import DATABASE_DEPENDENCY
+from ...domain.models.standard_models import ResponseModel, UpdatePropertyModel
+from ...api.exceptions import OPERATIONAL_EXCEPTION
+from ...domain.exceptions.bunglow_exceptions import BUNGLOW_INTEGRITY_EXCEPTION
+from ...services.bunglow_service import BunglowService
+
+
 # Sqlalchemy imports
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError, IntegrityError, SQLAlchemyError
@@ -15,44 +19,33 @@ from sqlalchemy.exc import OperationalError, IntegrityError, SQLAlchemyError
 # general imports
 import uuid
 
-# Bunglow imports
-from .exceptions import BUNGLOW_INTEGRITY_EXCEPTION
-from .controller import get_user_details
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=TOKEN_URL)
+service = BunglowService()
 
 # MARK : Ping API
 @router.get("/bunglow_ping")
 def bunglowPing():
-    get_user_details()
     return {"message" : "Bunglow is ready to be built."}
 
 @router.get("/count")
 def count_of_bunglows(db : Session = DATABASE_DEPENDENCY, token : OAuth2PasswordBearer = Depends(oauth2_scheme)):
-    
-    from .controller import count_property
-    
-    return count_property(db=db)
+    return service.count_property(db=db)
 
 @router.get("/get_property")
 def get_bunglow_by_id(id: uuid.UUID, db: Session = DATABASE_DEPENDENCY):
-    
-    from .controller import _get_property
-
-    return BunglowModel.model_validate(_get_property(db=db, id=id))
+    return service.get_property(db=db, id=id)
 
 # MARK : Get Bunglow
 @router.get("/allbunglows")
-def get_all_bunglows(limit : int = 10, offset : int = 1, db : Session = DATABASE_DEPENDENCY):
-    from .controller import get_all_bunglows_from_db
-
+def get_all_bunglows(limit : int, offset : int, db : Session = DATABASE_DEPENDENCY):
     try:
         
-        all_bunglows = get_all_bunglows_from_db(db=db,limit=limit,offset=offset)
+        all_bunglows = service.get_all_bunglows_from_db(db=db, limit=limit, offset=offset)
         
         return all_bunglows
-    except IntegrityError as i  : 
+    except IntegrityError as i: 
         print(f"Integrity exception raised: {i}")
         raise BUNGLOW_INTEGRITY_EXCEPTION
     except SQLAlchemyError as s:
@@ -88,15 +81,11 @@ def create_bunglow(model : BunglowModel, db : Session = DATABASE_DEPENDENCY):
           
 @router.patch("/update", response_model=ResponseModel)
 def update_bunglow(id : uuid.UUID, update_fields : UpdatePropertyModel, db : Session = DATABASE_DEPENDENCY):
-    
-    from .controller import update_property
-
-    return update_property(db=db,id=id, model=update_fields)
+    return service.update_property(db=db,id=id, model=update_fields)
     
 
 @router.delete("/delete")
 def delete_bunglow(id : uuid.UUID, db : Session = DATABASE_DEPENDENCY):
-    from .controller import delete_property
-    return delete_property(db=db, id=id)
+    return service.delete_property(db=db, id=id)
 
 

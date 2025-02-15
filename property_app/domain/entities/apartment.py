@@ -1,5 +1,5 @@
 from sqlalchemy import Float
-from property_app.core.schema import PropertyBaseModel, Column, String, Integer, Boolean
+from property_app.domain.entities.property_base import PropertyBaseModel, Column, String, Integer, Boolean
 from geoalchemy2 import Geography
 
 

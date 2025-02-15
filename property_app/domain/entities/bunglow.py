@@ -1,4 +1,4 @@
-from property_app.core.schema import PropertyBaseModel, Column, String, Integer
+from property_app.domain.entities.property_base import PropertyBaseModel, Column, String, Integer
 
 
 class Bunglows(PropertyBaseModel):

@@ -4,20 +4,20 @@ from fastapi import Query
 from fastapi.routing import APIRouter
 
 
-from .models import ApartmentModel
-from property_app.core.model import UpdatePropertyModel
+from ...domain.models.apartment_model import ApartmentModel
+from property_app.domain.models.standard_models import UpdatePropertyModel
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from .schema import Apartment
-from property_app.core.dependies import DATABASE_DEPENDENCY
+from ...domain.entities.apartment import Apartment
+from property_app.api.dependencies import DATABASE_DEPENDENCY
 
-from .controller import get_available_property, get_all_apartments, update_property
+from ...services.apartment_service import get_available_property, get_all_apartments, update_property
 
 router = APIRouter()
 
 @router.post("/listing/apartment")
 def create_property(apartment : ApartmentModel, db : Session = DATABASE_DEPENDENCY):
-    from .controller import create_apartment, map
+    from ...services.apartment_service import create_apartment, map
 
     apt = map(aptm=apartment)
     apt.location=f'SRID=4326;POINT({apt.latitude} {apt.longitude})'

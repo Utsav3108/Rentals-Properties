@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-from property_app.core.model import PropertyModel
+from property_app.domain.models.standard_models import PropertyModel
 
 class ApartmentModel(PropertyModel):
     bhk : int
